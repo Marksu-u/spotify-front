@@ -39,23 +39,75 @@ const Body = () => {
 
   return (
     <Container>
-      <h2>Liste des musiques</h2>
       <ul>
-        {audios.map((audio) => (
-          <li key={audio.id}>
-            <h3>{audio.title}</h3>
-            <p>Artiste: {audio.artist}</p>
-            <p>Album: {audio.album}</p>
-            <p>Date: {audio.date}</p>
-            <p>Genre: {audio.genre}</p>
-            <img src={audio.image} alt={audio.title} />
-          </li>
+        {audios.map((audio, index) => (
+          <Audio key={audio.id}>
+            <span className="number">{index + 1}</span>
+            <img src={audio.image} alt={audio.title} className="image" />
+            <span className="title">{audio.title}</span>
+            <span className="album">{audio.album}</span>
+            <span className="date">{audio.date}</span>
+          </Audio>
         ))}
       </ul>
     </Container>
   );
 };
 
-const Container = styled.div``;
+const Container = styled.div`
+  /* Styles pour Container */
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+`;
+
+const Audio = styled.li`
+  /* Styles pour Audio */
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px;
+  transition: background-color 0.3s ease-in-out;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .number {
+    /* Styles pour le numéro */
+    flex: 0.1;
+    color: #dddcdc;
+    font-size: 1.5rem;
+  }
+
+  .image {
+    /* Styles pour l'image */
+    flex: 0.1;
+    height: 80px; /* Ajustez la taille des images ici */
+    width: 80px;  /* Ajustez la taille des images ici */
+  }
+
+  .title {
+    /* Styles pour le titre */
+    flex: 0.3;
+    color: white;
+    font-size: 2rem;
+  }
+
+  .album {
+    /* Styles pour l'album */
+    flex: 0.3;
+    color: #dddcdc;
+    font-size: 1.2rem;
+  }
+
+  .date {
+    /* Styles pour la date */
+    flex: 0.3;
+    color: #dddcdc;
+    font-size: 1.2rem;
+  }
+`;
 
 export default Body;
