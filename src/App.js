@@ -1,14 +1,7 @@
-import AudioPlayer from "./components/AudioPlayer/index.js";
+import { RouterProvider } from "react-router-dom";
+import router from "./config/router";
+import "./index.css";
 
-function App() {
-  const audioSrc = 'http://localhost:4000/api/audio/stream/6571db6c650bfbccda0d3452';
-
-  return (
-    <div className="App">
-      <h1>Audio Streaming Test</h1>
-      <AudioPlayer src={audioSrc} />
-    </div>
-  );
+export default function App() {
+  return <RouterProvider router={router} />;
 }
-
-export default App;
