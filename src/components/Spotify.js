@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
-import Body from "./Body";
-import Footer from "./Footer";
+import React from 'react';
+import styled from 'styled-components';
+import Sidebar from './Sidebar';
+import Navbar from './Navbar';
+import Body from './Body';
+import Footer from './Footer';
 
 const Spotify = () => {
   return (

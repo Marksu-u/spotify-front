@@ -39,31 +39,44 @@ const Body = () => {
 
   return (
     <Container>
-      <ul>
+      <AudioList>
+        <AudioHeader>
+          <ColumnNumber>#</ColumnNumber>
+          <ColumnImage>Image</ColumnImage>
+          <ColumnTitle>Titre</ColumnTitle>
+          <ColumnAlbum>Album</ColumnAlbum>
+          <ColumnDate>Date</ColumnDate>
+        </AudioHeader>
         {audios.map((audio, index) => (
-          <Audio key={audio.id}>
-            <span className="number">{index + 1}</span>
-            <img src={audio.image} alt={audio.title} className="image" />
-            <span className="title">{audio.title}</span>
-            <span className="album">{audio.album}</span>
-            <span className="date">{audio.date}</span>
-          </Audio>
+          <AudioItem key={audio.id}>
+            <ColumnNumber>{index + 1}</ColumnNumber>
+            <ColumnImage>
+              <img src={audio.image} alt={audio.title} className="image" />
+            </ColumnImage>
+            <ColumnTitle>{audio.title}</ColumnTitle>
+            <ColumnAlbum>{audio.album}</ColumnAlbum>
+            <ColumnDate>{audio.date}</ColumnDate>
+          </AudioItem>
         ))}
-      </ul>
+      </AudioList>
     </Container>
   );
 };
 
 const Container = styled.div`
-  /* Styles pour Container */
   ul {
     list-style: none;
     padding: 0;
   }
 `;
 
-const Audio = styled.li`
-  /* Styles pour Audio */
+const AudioList = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+`;
+
+const AudioItem = styled.li`
   display: flex;
   align-items: center;
   gap: 20px;
@@ -73,41 +86,55 @@ const Audio = styled.li`
   &:hover {
     background-color: rgba(0, 0, 0, 0.7);
   }
+`;
 
-  .number {
-    /* Styles pour le numéro */
-    flex: 0.1;
-    color: #dddcdc;
-    font-size: 1.5rem;
-  }
+const AudioHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px;
+  background-color: #000000dc;
+  font-weight: bold;
+`;
 
-  .image {
-    /* Styles pour l'image */
-    flex: 0.1;
-    height: 80px; /* Ajustez la taille des images ici */
-    width: 80px;  /* Ajustez la taille des images ici */
-  }
+const ColumnNumber = styled.span`
+  flex: 0.1;
+  color: white;
+  font-size: 1rem;
+  text-align: center;
+`;
 
-  .title {
-    /* Styles pour le titre */
-    flex: 0.3;
-    color: white;
-    font-size: 2rem;
+const ColumnImage = styled.span`
+  flex: 0.1;
+  color: white;
+  font-size: 1rem;
+  text-align: center;
+  img {
+    max-height: 70px;
+    max-width: 70px;
+    vertical-align: middle;
   }
+`;
 
-  .album {
-    /* Styles pour l'album */
-    flex: 0.3;
-    color: #dddcdc;
-    font-size: 1.2rem;
-  }
+const ColumnTitle = styled.span`
+  flex: 0.3;
+  color: white;
+  font-size: 1rem;
+  text-align: center;
+`;
 
-  .date {
-    /* Styles pour la date */
-    flex: 0.3;
-    color: #dddcdc;
-    font-size: 1.2rem;
-  }
+const ColumnAlbum = styled.span`
+  flex: 0.3;
+  color: white;
+  font-size: 1rem;
+  text-align: center;
+`;
+
+const ColumnDate = styled.span`
+  flex: 0.2;
+  color: white;
+  font-size: 1rem;
+  text-align: center;
 `;
 
 export default Body;
