@@ -3,8 +3,10 @@ import styled from "styled-components";
 
 const Playlists = () => {
   return (
-    <div>Vos Playlists</div>
+    <Container>Vos Playlists</Container>
   )
 }
+
+const Container = styled.div``;
 
 export default Playlists;
