@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { BsFillPlayCircleFill, BsFillPauseCircleFill, BsShuffle } from 'react-icons/bs';
+import {
+  BsFillPlayCircleFill,
+  BsFillPauseCircleFill,
+  BsShuffle,
+} from 'react-icons/bs';
 import { CgPlayTrackNext, CgPlayTrackPrev } from 'react-icons/cg';
 import { FiRepeat } from 'react-icons/fi';
 import shuffle from 'just-shuffle';
@@ -131,7 +135,12 @@ const Container = styled.div`
   position: relative;
 
   .shuffle {
-    color: ${(props) => (props.repeatMode === "none" ? "white" : props.repeatMode === "playlist" ? "green" : "red")};
+    color: ${(props) =>
+      props.repeatMode === 'none'
+        ? 'white'
+        : props.repeatMode === 'playlist'
+          ? 'green'
+          : 'red'};
     transition: 0.2s ease-in-out;
     &:hover {
       color: white;
@@ -175,7 +184,7 @@ const ButtonContainer = styled.div`
 `;
 
 const ProgressBar = styled.input.attrs((props) => ({
-  type: "range",
+  type: 'range',
   max: props.max || 100,
   value: props.value || 0,
 }))`
@@ -211,12 +220,9 @@ const TimeDisplay = styled.div`
 `;
 
 const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
-  };
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+};
 
 export default PlayerControls;
-
-
-

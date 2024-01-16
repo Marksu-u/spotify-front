@@ -1,11 +1,9 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const Playlists = () => {
-  return (
-    <Container>Vos Playlists</Container>
-  )
-}
+  return <Container>Vos Playlists</Container>;
+};
 
 const Container = styled.div``;
 

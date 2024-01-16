@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 import styled from 'styled-components';
-import {IoLibrary} from 'react-icons/io5';
+import { IoLibrary } from 'react-icons/io5';
 import { MdHomeFilled, MdSearch } from 'react-icons/md';
 import Playlists from './Playlists';
 
@@ -16,23 +16,23 @@ const Sidebar = () => {
         </div>
         <ul>
           <li>
-              <MdHomeFilled />
+            <MdHomeFilled />
             <span>Accueil</span>
           </li>
           <li>
-              <MdSearch />
+            <MdSearch />
             <span>Rechercher</span>
           </li>
           <li>
-              <IoLibrary />
+            <IoLibrary />
             <span>Bibliothèque</span>
           </li>
         </ul>
       </div>
       <Playlists />
     </Container>
-  )
-}
+  );
+};
 
 const Container = styled.div`
   background-color: black;

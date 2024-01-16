@@ -1,7 +1,7 @@
 import React from 'react';
-import styled from "styled-components";
-import { FaSearch } from "react-icons/fa";
-import { CgProfile } from "react-icons/cg";
+import styled from 'styled-components';
+import { FaSearch } from 'react-icons/fa';
+import { CgProfile } from 'react-icons/cg';
 
 const Navbar = () => {
   return (
@@ -21,7 +21,7 @@ const Navbar = () => {
 };
 
 const Container = styled.div`
- display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 2rem;
@@ -30,7 +30,7 @@ const Container = styled.div`
   top: 0;
   transition: 0.3s ease-in-out;
   background-color: ${({ navBackground }) =>
-    navBackground ? "rgba(0,0,0,0.7)" : "none"};
+    navBackground ? 'rgba(0,0,0,0.7)' : 'none'};
   .search__bar {
     background-color: white;
     width: 30%;

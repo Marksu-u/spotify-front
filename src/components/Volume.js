@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
-import { BsFillVolumeUpFill, BsFillVolumeMuteFill } from "react-icons/bs";
+import React, { useState, useEffect, useRef } from 'react';
+import styled from 'styled-components';
+import { BsFillVolumeUpFill, BsFillVolumeMuteFill } from 'react-icons/bs';
 
 const Volume = ({ audioRef }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -73,7 +73,7 @@ const Container = styled.div`
   display: flex;
   gap: 1rem;
   align-items: center;
-  justify-content: flex-end; 
+  justify-content: flex-end;
   div {
     svg {
       transition: 0.2s ease-in-out;

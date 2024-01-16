@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import styled from 'styled-components';
 import CurrentTrack from './CurrentTrack';
 import PlayerControls from './PlayerControls';
@@ -9,8 +9,8 @@ const Footer = () => {
       <CurrentTrack />
       <PlayerControls />
     </Container>
-  )
-}
+  );
+};
 
 const Container = styled.div`
   height: 100%;
