@@ -116,7 +116,7 @@ const PlayerControls = () => {
         <TimeDisplay>{formatTime(duration)}</TimeDisplay>
       </Bar>
       <div className="volume">
-        <Volume audioRef={audioRef} /> {/* Utilisez votre composant de contrôle du volume */}
+        <Volume audioRef={audioRef} />
       </div>
     </Container>
   );
