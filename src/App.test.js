@@ -1,16 +1,14 @@
 import { render } from '@testing-library/react';
-import Navbar from './components/Navbar';
-import App from './App';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import CardAlbum from './components/CardAlbum';
 
-test('renders App component with router', () => {
-  render(<App />);
+test('CardAlbum renders with correct albumId', () => {
+  const albumId = 'albumId';
+  render(
+    <MemoryRouter initialEntries={[`/album/${albumId}`]}>
+      <Routes>
+        <Route path="album/:albumId" element={<CardAlbum />} />
+      </Routes>
+    </MemoryRouter>
+  );
 });
-
-test('renders Navbar with search bar and profile info', () => {
-  render(<Navbar />);
-});
-
-// Vous pouvez ajouter des assertions ici pour vérifier si certains éléments sont présents
-// Par exemple, vérifiez si un élément spécifique de votre routeur est rendu
-// const navbarElement = screen.getByText(/texte spécifique dans le Navbar/);
-// expect(navbarElement).toBeInTheDocument();

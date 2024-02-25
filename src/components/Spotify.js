@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Routes, Route } from 'react-router-dom';
-import Layout from './Layout';
 import Body from './Body';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
