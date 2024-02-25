@@ -1,14 +1,29 @@
-import React from 'react';
+import React, { useState, lazy, memo } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { FaSearch } from 'react-icons/fa';
 import { CgProfile } from 'react-icons/cg';
 
-const Navbar = () => {
+const Input = lazy(() => import('../Input'));
+
+const Search = ({ onSearchChange }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+    onSearchChange(e.target.value);
+  };
+
   return (
     <Container>
       <div className="search__bar">
         <FaSearch />
-        <input type="text" placeholder="Que souhaitez-vous écouter ?" />
+        <input
+          type="text"
+          placeholder="Que souhaitez-vous écouter ?"
+          value={searchQuery}
+          onChange={handleSearchInputChange}
+        />
       </div>
       <div className="avatar">
         <a>
@@ -75,4 +90,8 @@ const Container = styled.div`
   }
 `;
 
-export default Navbar;
+Search.propTypes = {
+  onSearchChange: PropTypes.func.isRequired,
+};
+
+export default memo(Search);

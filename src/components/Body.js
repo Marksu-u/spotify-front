@@ -1,63 +1,122 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense, lazy, useMemo } from 'react';
+import { transformAlbums } from '../services/transformService';
+import { saveAlbums, getAlbums } from '../services/indexerDBService';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Loader from './Loader';
 import { apiService } from '../services/apiService';
 
-const Body = () => {
-  const [audios, setAudios] = useState([]);
+const PageControls = lazy(() => import('../components/PageControls'));
+const Search = lazy(() => import('../components/Search'));
+
+const ITEMS_PER_PAGE = 24;
+
+const Body = ({ onAlbumSelect }) => {
+  const [albums, setAlbums] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const goToAlbumDetails = (albumId) => {
+    navigate(`/album/${albumId}`);
+  };
+
+  const fetchAlbums = async () => {
+    setIsLoading(true);
+
+    try {
+      let albumData = await getAlbums();
+
+      if (!albumData.length) {
+        const fetchedAlbums = await apiService.getAlbums();
+        const transformedAlbums = await Promise.all(
+          fetchedAlbums.map(transformAlbums)
+        );
+        await saveAlbums(transformedAlbums);
+        albumData = transformedAlbums;
+      }
+
+      setAlbums(albumData);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchAudios = async () => {
-      try {
-        const fetchedAudios = await apiService.getAudios();
-        const transformedAudios = fetchedAudios.map((audio) => {
-          return {
-            id: audio._id,
-            title: audio.filename,
-            artist: audio.metadata.artist.name,
-            album: audio.metadata.album.title,
-            date: audio.metadata.date,
-            genre: audio.metadata.genre.join(', '),
-            image: convertBufferToImageUrl(audio.metadata.picture[0]),
-          };
-        });
-        setAudios(transformedAudios);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchAudios();
+    fetchAlbums();
   }, []);
 
-  const convertBufferToImageUrl = (picture) => {
-    if (picture && picture.data && picture.data.data) {
-      const buffer = new Uint8Array(picture.data.data);
-      const blob = new Blob([buffer], { type: picture.format });
-      return URL.createObjectURL(blob);
-    }
-    return null;
+  const filteredItems = useMemo(() => {
+    return albums.filter((item) => {
+      const titleMatch = item.title
+        ? item.title.toLowerCase().includes(searchQuery.toLowerCase())
+        : false;
+      const artistMatch = item.artist
+        ? item.artist.toLowerCase().includes(searchQuery.toLowerCase())
+        : false;
+      return titleMatch || artistMatch;
+    });
+  }, [albums, searchQuery]);
+
+  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+  const currentItems = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredItems.slice(start, start + ITEMS_PER_PAGE);
+  }, [currentPage, filteredItems]);
+
+  const goToPreviousPage = () =>
+    setCurrentPage((page) => Math.max(page - 1, 1));
+  const goToNextPage = () =>
+    setCurrentPage((page) => Math.min(page + 1, totalPages));
+
+  const handleSearchChange = (query) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
   };
+
+  const renderListItems = useMemo(
+    () => (
+      <Suspense fallback={<Loader />}>
+        {currentItems.map((album, index) => (
+          <AudioItem
+            key={album._id}
+            onClick={() => goToAlbumDetails(album._id)}
+          >
+            <ColumnNumber>{index + 1}</ColumnNumber>
+            <ColumnImage>
+              <img src={album.picture} alt={album.title} className="image" />
+            </ColumnImage>
+            <ColumnTitle>{album.title}</ColumnTitle>
+            <ColumnAlbum>{album.artist}</ColumnAlbum>
+            <ColumnDate>{album.releaseDate}</ColumnDate>
+          </AudioItem>
+        ))}
+      </Suspense>
+    ),
+    [currentItems, onAlbumSelect]
+  );
 
   return (
     <Container>
+      <Search onSearchChange={handleSearchChange} />
       <AudioList>
         <AudioHeader>
           <ColumnNumber>#</ColumnNumber>
           <ColumnImage>Image</ColumnImage>
-          <ColumnTitle>Titre</ColumnTitle>
-          <ColumnAlbum>Album</ColumnAlbum>
+          <ColumnTitle>Album</ColumnTitle>
+          <ColumnAlbum>Artiste</ColumnAlbum>
           <ColumnDate>Date</ColumnDate>
         </AudioHeader>
-        {audios.map((audio, index) => (
-          <AudioItem key={audio.id}>
-            <ColumnNumber>{index + 1}</ColumnNumber>
-            <ColumnImage>
-              <img src={audio.image} alt={audio.title} className="image" />
-            </ColumnImage>
-            <ColumnTitle>{audio.title}</ColumnTitle>
-            <ColumnAlbum>{audio.album}</ColumnAlbum>
-            <ColumnDate>{audio.date}</ColumnDate>
-          </AudioItem>
-        ))}
+        {isLoading ? <Loader /> : renderListItems}
+        <PageControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPrevious={goToPreviousPage}
+          onNext={goToNextPage}
+        />
       </AudioList>
     </Container>
   );

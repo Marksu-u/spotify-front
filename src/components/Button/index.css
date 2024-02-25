@@ -1,0 +1,23 @@
+.button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #1DB954;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .button:hover {
+    background-color: #1ed760;
+  }
+  
+  .submit-button {
+    background-color: #1DB954;
+  }
+  
+  .cancel-button {
+    background-color: #b3b3b3;
+  }
+  

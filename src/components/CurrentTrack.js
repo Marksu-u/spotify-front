@@ -23,7 +23,7 @@ const CurrentTrack = () => {
       {currentTrack && (
         <div className="track">
           <div className="track__image">
-            <img src={currentTrack.image} alt={currentTrack.title} />
+            <img src={currentTrack.picture} alt={currentTrack.title} />
           </div>
           <div className="track__info">
             <h4 className="track__info__track__name">{currentTrack.title}</h4>

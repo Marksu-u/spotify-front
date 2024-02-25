@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import Sidebar from './Sidebar';
-import Navbar from './Navbar';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './Layout';
 import Body from './Body';
+import Sidebar from './Sidebar';
 import Footer from './Footer';
+import CardAlbum from './CardAlbum';
 
 const Spotify = () => {
   return (
@@ -11,9 +13,11 @@ const Spotify = () => {
       <div className="spotify__body">
         <Sidebar />
         <div className="body">
-          <Navbar />
           <div className="body__contents">
-            <Body />
+            <Routes>
+              <Route path="/" element={<Body />} />
+              <Route path="album/:albumId" element={<CardAlbum />} />
+            </Routes>
           </div>
         </div>
       </div>
