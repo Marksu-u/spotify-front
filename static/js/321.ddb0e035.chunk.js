@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkspotify_clone=self.webpackChunkspotify_clone||[]).push([[321],{321:(e,t,l)=>{l.r(t),l.d(t,{default:()=>o});var n=l(791),s=l(184);const c=e=>{let{label:t,onClick:l}=e;return(0,s.jsx)("button",{type:"submit",onClick:l,children:t})},o=n.memo(c)}}]);
+//# sourceMappingURL=321.ddb0e035.chunk.js.map
