@@ -1,13 +1,13 @@
 import React, { useState, lazy, memo } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useUniqueId } from '../../context/UniqueIDContext';
 import { FaSearch } from 'react-icons/fa';
 import { CgProfile } from 'react-icons/cg';
 
-const Input = lazy(() => import('../Input'));
-
 const Search = ({ onSearchChange }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const uniqueId = useUniqueId();
 
   const handleSearchInputChange = (e) => {
     setSearchQuery(e.target.value);
@@ -28,7 +28,7 @@ const Search = ({ onSearchChange }) => {
       <div className="avatar">
         <a>
           <CgProfile />
-          <span>C'est le compte de Zaki</span>
+          <span>{uniqueId}</span>
         </a>
       </div>
     </Container>
