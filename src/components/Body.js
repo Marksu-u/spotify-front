@@ -9,7 +9,7 @@ import { apiService } from '../services/apiService';
 const PageControls = lazy(() => import('../components/PageControls'));
 const Search = lazy(() => import('../components/Search'));
 
-const ITEMS_PER_PAGE = 24;
+const ITEMS_PER_PAGE = 12;
 
 const Body = ({ onAlbumSelect }) => {
   const [albums, setAlbums] = useState([]);

@@ -1,20 +1,16 @@
-import React, { useEffect, useState, Suspense, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Loader from '../Loader';
-import TrackControls from '../TrackControls';
 import { apiService } from '../../services/apiService';
 import { transformAlbumsWithAudios } from '../../services/transformService';
+import { useAudioPlayback } from '../../context/AudioPlaybackProvider';
 
 const CardAlbum = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { albumId } = useParams();
   const [albumDetails, setAlbumDetails] = useState(null);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [shuffle, setShuffle] = useState(false);
-  const [repeat, setRepeat] = useState(false);
-  const audioRef = useRef(new Audio());
+  const { setCurrentSongId } = useAudioPlayback();
 
   const navigate = useNavigate();
 
@@ -23,7 +19,6 @@ const CardAlbum = () => {
     try {
       const albumData = await apiService.getAudioFromAlbum(albumId);
       const transformedAlbum = await transformAlbumsWithAudios(albumData);
-
       setAlbumDetails(transformedAlbum);
     } catch (error) {
       console.error(error);
@@ -36,78 +31,13 @@ const CardAlbum = () => {
     fetchAlbumWithSongs();
   }, [albumId]);
 
-  useEffect(() => {
-    if (albumDetails && albumDetails.audios.length > 0) {
-      const audioUrl = apiService.streamAudio(
-        albumDetails.audios[currentSongIndex]._id
-      );
-      console.log('Audio URL:', audioUrl);
-      audioRef.current.src = audioUrl;
-      if (isPlaying) {
-        audioRef.current
-          .play()
-          .catch((error) => console.error('Error playing audio:', error));
-      }
-    }
-  }, [albumDetails, currentSongIndex, isPlaying]);
+  const handleSongItemClick = (songId) => {
+    console.log('Song clicked:', songId);
+    setCurrentSongId(songId);
+  };
 
   const handleBack = () => {
     navigate(-1);
-  };
-
-  useEffect(() => {
-    const handleEnded = () => {
-      if (repeat) {
-        audioRef.current.play();
-      } else {
-        handleNextClick();
-      }
-    };
-
-    audioRef.current.addEventListener('ended', handleEnded);
-
-    return () => {
-      audioRef.current.removeEventListener('ended', handleEnded);
-    };
-  }, [repeat, albumDetails, currentSongIndex]);
-
-  const handleSongItemClick = (index) => {
-    setCurrentSongIndex(index);
-    setIsPlaying(true);
-  };
-
-  const handlePlayPauseClick = (play) => {
-    if (play) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
-    }
-    setIsPlaying(play);
-  };
-
-  const handleNextClick = () => {
-    if (shuffle) {
-      const nextSongIndex = Math.floor(
-        Math.random() * albumDetails.audios.length
-      );
-      setCurrentSongIndex(nextSongIndex);
-    } else {
-      setCurrentSongIndex((prevIndex) => {
-        let nextIndex = prevIndex + 1;
-        if (nextIndex >= albumDetails.audios.length) {
-          nextIndex = 0;
-        }
-        return nextIndex;
-      });
-    }
-  };
-
-  const handleShuffleClick = () => {
-    setShuffle(!shuffle);
-  };
-
-  const handleRepeatClick = () => {
-    setRepeat(!repeat);
   };
 
   if (isLoading) {
@@ -116,33 +46,27 @@ const CardAlbum = () => {
 
   return (
     <AlbumContainer>
+      <button onClick={handleBack}>Back to Albums</button>
       <AlbumHeader>
-        <button onClick={handleBack}>Back to Albums</button>
         <AlbumArtwork src={albumDetails.picture} alt="Album cover" />
         <AlbumInfo>
           <AlbumTitle>{albumDetails.title}</AlbumTitle>
           <AlbumArtist>{albumDetails.artist}</AlbumArtist>
-          <AlbumGenre>{albumDetails.genre}</AlbumGenre>;
+          <AlbumGenre>{albumDetails.genre}</AlbumGenre>
           <AlbumReleaseDate>{albumDetails.releaseDate}</AlbumReleaseDate>
         </AlbumInfo>
       </AlbumHeader>
       <SongsList>
         {albumDetails.audios.map((audio, index) => (
-          <SongItem key={audio._id} onClick={() => handleSongItemClick(index)}>
+          <SongItem
+            key={audio._id}
+            onClick={() => handleSongItemClick(audio._id)}
+          >
             <SongNumber>{index + 1}</SongNumber>
             <SongTitle>{audio.title}</SongTitle>
           </SongItem>
         ))}
       </SongsList>
-      <TrackControls
-        isPlaying={isPlaying}
-        onPlayPauseClick={handlePlayPauseClick}
-        onNextClick={handleNextClick}
-        onShuffleClick={handleShuffleClick}
-        onRepeatClick={handleRepeatClick}
-        shuffle={shuffle}
-        repeat={repeat}
-      />
     </AlbumContainer>
   );
 };

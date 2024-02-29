@@ -1,8 +1,16 @@
 import React from 'react';
+import { useAudioPlayback } from '../context/AudioPlaybackProvider';
 import styled from 'styled-components';
+import TrackControls from '../components/TrackControls';
 
 const Footer = () => {
-  return <Container></Container>;
+  const { isPlaying, handlePlayPauseClick } = useAudioPlayback();
+
+  return (
+    <Container>
+      <TrackControls />
+    </Container>
+  );
 };
 
 const Container = styled.div`

@@ -1,14 +1,20 @@
 import React from 'react';
+import styled from 'styled-components';
+import { useAudioPlayback } from '../context/AudioPlaybackProvider';
 
-const TrackControls = ({
-  isPlaying,
-  onPlayPauseClick,
-  onNextClick,
-  onShuffleClick,
-  onRepeatClick,
-  shuffle,
-  repeat,
-}) => {
+const TrackControls = () => {
+  const {
+    isPlaying,
+    handlePlayPauseClick,
+    // Assuming these functions will be implemented in your AudioPlaybackProvider
+    // playNext,
+    // shuffleSongs,
+    // repeatSong,
+    // These states might be part of your provider or local state management for shuffle and repeat
+    // shuffle,
+    // repeat,
+  } = useAudioPlayback();
+
   return (
     <div
       style={{
@@ -18,14 +24,13 @@ const TrackControls = ({
         gap: '10px',
       }}
     >
-      <button onClick={onShuffleClick}>
-        {shuffle ? 'Unshuffle' : 'Shuffle'}
-      </button>
-      <button onClick={() => onPlayPauseClick(!isPlaying)}>
+      {/* Implement or conditionally render these buttons based on your application's logic */}
+      {/* <button onClick={shuffleSongs}>{shuffle ? 'Unshuffle' : 'Shuffle'}</button> */}
+      <button onClick={handlePlayPauseClick}>
         {isPlaying ? 'Pause' : 'Play'}
       </button>
-      <button onClick={onNextClick}>Next</button>
-      <button onClick={onRepeatClick}>{repeat ? 'Unrepeat' : 'Repeat'}</button>
+      {/* <button onClick={playNext}>Next</button> */}
+      {/* <button onClick={repeatSong}>{repeat ? 'Unrepeat' : 'Repeat'}</button> */}
     </div>
   );
 };

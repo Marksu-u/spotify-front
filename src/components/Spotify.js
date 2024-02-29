@@ -1,10 +1,8 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import { Routes, Route } from 'react-router-dom';
-import Body from './Body';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
-import CardAlbum from './CardAlbum';
 
 const Spotify = () => {
   return (
@@ -13,10 +11,7 @@ const Spotify = () => {
         <Sidebar />
         <div className="body">
           <div className="body__contents">
-            <Routes>
-              <Route path="/" element={<Body />} />
-              <Route path="album/:albumId" element={<CardAlbum />} />
-            </Routes>
+            <Outlet />
           </div>
         </div>
       </div>
