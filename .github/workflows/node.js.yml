@@ -28,9 +28,6 @@ jobs:
       - name: Set REACT_APP_API_URL
         run: echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> $GITHUB_WORKSPACE/.env.local
 
-      - name: Set REACT_URL
-        run: echo "REACT_URL=${{ secrets.REACT_URL }}" >> $GITHUB_WORKSPACE/.env.local
-
       - name: Deploy with gh-pages
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git

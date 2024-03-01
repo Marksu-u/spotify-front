@@ -8,8 +8,10 @@ import React, {
 import { apiService } from '../services/apiService';
 import { io } from 'socket.io-client';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const AudioPlaybackContext = createContext();
-const socket = io(`${process.env.REACT_URL}`);
+const socket = io(`${API_URL}/`);
 
 export const useAudioPlayback = () => useContext(AudioPlaybackContext);
 
