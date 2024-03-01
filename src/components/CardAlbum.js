@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Loader from '../Loader';
-import { apiService } from '../../services/apiService';
-import { transformAlbumsWithAudios } from '../../services/transformService';
-import { useAudioPlayback } from '../../context/AudioPlaybackProvider';
+import Loader from './Loader';
+import { apiService } from '../services/apiService';
+import { transformAlbumsWithAudios } from '../services/transformService';
+import { useAudioPlayback } from '../context/AudioPlaybackProvider';
 
 const CardAlbum = () => {
   const [isLoading, setIsLoading] = useState(true);
