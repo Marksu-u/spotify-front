@@ -1,65 +1,150 @@
 import React, {
   createContext,
   useContext,
+  useEffect,
   useState,
   useRef,
-  useEffect,
 } from 'react';
 import { apiService } from '../services/apiService';
+import { io } from 'socket.io-client';
 
 const AudioPlaybackContext = createContext();
+const socket = io('http://localhost:4000/');
 
 export const useAudioPlayback = () => useContext(AudioPlaybackContext);
 
 export const AudioPlaybackProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [sessionId, setSessionId] = useState(null);
   const [currentSongId, setCurrentSongId] = useState(null);
+  const [isHost, setIsHost] = useState(false);
   const audioRef = useRef(new Audio());
 
-  useEffect(() => {
-    if (currentSongId) {
-      console.log('Fetching and playing song:', currentSongId);
-      const fetchAndPlaySong = async () => {
-        try {
-          const audioUrl = await apiService.streamAudio(currentSongId);
-          audioRef.current.src = audioUrl;
-          console.log('Audio source set:', audioUrl);
-          if (isPlaying) {
-            audioRef.current
-              .play()
-              .catch((error) => console.error('Error playing audio:', error));
-          }
-        } catch (error) {
-          console.error('Failed to fetch song:', error);
-        }
-      };
-
-      fetchAndPlaySong();
+  // Function to fetch and play a song
+  const fetchAndPlaySong = async (songId) => {
+    try {
+      const audioUrl = await apiService.streamAudio(songId);
+      audioRef.current.src = audioUrl;
+      audioRef.current
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+          console.log('Playback started successfully');
+        })
+        .catch((error) => {
+          console.error('Error playing audio:', error);
+        });
+    } catch (error) {
+      console.error('Failed to fetch song:', error);
     }
-  }, [currentSongId, isPlaying]);
+  };
 
+  // Adjust setCurrentSongId to optionally fetch and play
+  const adjustedSetCurrentSongId = (songId) => {
+    setCurrentSongId(songId);
+    if (isPlaying) {
+      // If already playing, fetch and play the new song immediately
+      fetchAndPlaySong(songId);
+    }
+  };
+
+  // Modify handlePlayPauseClick for controlled playback
   const handlePlayPauseClick = () => {
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
-      if (audioRef.current.src) {
+      if (
+        currentSongId &&
+        (!audioRef.current.src ||
+          audioRef.current.src.indexOf(currentSongId) === -1)
+      ) {
+        fetchAndPlaySong(currentSongId); // Fetch and play if song changed or not started yet
+      } else {
         audioRef.current
           .play()
           .catch((error) => console.error('Error playing audio:', error));
-      } else {
-        console.error('Audio source not set');
+        setIsPlaying(true);
       }
     }
-    setIsPlaying(!isPlaying);
+  };
+
+  useEffect(() => {
+    socket.on('syncPlayback', async ({ isPlaying, songId, currentTime }) => {
+      console.log(`Received syncPlayback with songId: ${songId}`);
+      if (songId) {
+        setCurrentSongId(songId);
+        try {
+          const audioUrl = await apiService.streamAudio(songId);
+          audioRef.current.src = audioUrl;
+
+          const onAudioLoaded = () => {
+            audioRef.current.currentTime = currentTime;
+            if (isPlaying) {
+              audioRef.current
+                .play()
+                .catch((error) => console.error('Error playing audio:', error));
+            }
+          };
+
+          if (audioRef.current.readyState >= 2) {
+            onAudioLoaded();
+          } else {
+            audioRef.current.addEventListener('loadeddata', onAudioLoaded, {
+              once: true,
+            });
+          }
+        } catch (error) {
+          console.error('Failed to load song:', error);
+        }
+      }
+    });
+
+    return () => socket.off('syncPlayback');
+  }, []);
+
+  const startSession = () => {
+    socket.emit('startSession', { sessionId, isHost: true });
+    socket.on(
+      'sessionStarted',
+      ({ sessionId: newSessionId, isHost: newIsHost }) => {
+        setSessionId(newSessionId);
+        setIsHost(newIsHost);
+      }
+    );
+  };
+
+  const joinSession = (id) => {
+    socket.emit('joinSession', id);
+    socket.on(
+      'sessionJoined',
+      ({ sessionId: joinedSessionId, isHost: joinedIsHost }) => {
+        setSessionId(joinedSessionId);
+        setIsHost(joinedIsHost);
+      }
+    );
+  };
+
+  const leaveSession = () => {
+    if (sessionId) {
+      socket.emit('leaveSession', sessionId);
+      setSessionId(null);
+      setIsHost(false);
+    }
   };
 
   const value = {
     isPlaying,
     setIsPlaying,
     currentSongId,
-    setCurrentSongId,
+    setCurrentSongId: adjustedSetCurrentSongId,
     handlePlayPauseClick,
     audioRef,
+    startSession,
+    joinSession,
+    leaveSession,
+    sessionId,
+    isHost,
   };
 
   return (

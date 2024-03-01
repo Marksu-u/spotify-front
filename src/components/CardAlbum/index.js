@@ -10,7 +10,7 @@ const CardAlbum = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { albumId } = useParams();
   const [albumDetails, setAlbumDetails] = useState(null);
-  const { setCurrentSongId } = useAudioPlayback();
+  const { setCurrentSongId, setIsPlaying } = useAudioPlayback();
 
   const navigate = useNavigate();
 
@@ -34,6 +34,7 @@ const CardAlbum = () => {
   const handleSongItemClick = (songId) => {
     console.log('Song clicked:', songId);
     setCurrentSongId(songId);
+    setIsPlaying(true);
   };
 
   const handleBack = () => {

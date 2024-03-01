@@ -6,14 +6,26 @@ const TrackControls = () => {
   const {
     isPlaying,
     handlePlayPauseClick,
-    // Assuming these functions will be implemented in your AudioPlaybackProvider
-    // playNext,
-    // shuffleSongs,
-    // repeatSong,
-    // These states might be part of your provider or local state management for shuffle and repeat
-    // shuffle,
-    // repeat,
+    startSession,
+    joinSession,
+    leaveSession,
+    sessionId,
   } = useAudioPlayback();
+
+  const handleStartSessionClick = () => {
+    startSession();
+  };
+
+  const handleJoinSessionClick = () => {
+    const id = prompt('Enter session ID:');
+    if (id) {
+      joinSession(id);
+    }
+  };
+
+  const handleLeaveSessionClick = () => {
+    leaveSession();
+  };
 
   return (
     <div
@@ -24,13 +36,30 @@ const TrackControls = () => {
         gap: '10px',
       }}
     >
-      {/* Implement or conditionally render these buttons based on your application's logic */}
-      {/* <button onClick={shuffleSongs}>{shuffle ? 'Unshuffle' : 'Shuffle'}</button> */}
       <button onClick={handlePlayPauseClick}>
         {isPlaying ? 'Pause' : 'Play'}
       </button>
-      {/* <button onClick={playNext}>Next</button> */}
-      {/* <button onClick={repeatSong}>{repeat ? 'Unrepeat' : 'Repeat'}</button> */}
+      {!sessionId && (
+        <button onClick={handleStartSessionClick}>Start Session</button>
+      )}
+      {!sessionId ? (
+        <button onClick={handleJoinSessionClick}>Join Session</button>
+      ) : (
+        <button onClick={handleLeaveSessionClick}>Leave Session</button>
+      )}
+      {sessionId && (
+        <p
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '10px',
+            color: 'white',
+          }}
+        >
+          Session ID: {sessionId}
+        </p>
+      )}
     </div>
   );
 };
